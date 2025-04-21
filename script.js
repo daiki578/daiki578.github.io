@@ -1,8 +1,9 @@
 const player = document.querySelector('.player');
 const gameContainer = document.querySelector('.game-container');
 const startButton = document.getElementById('start-button');
-const lanes = ["20%", "50%", "80%"];
-let currentLane = 1;
+const gameOverScreen = document.getElementById('game-over-screen');
+const lanes = ["10%", "25%", "40%", "55%", "70%"]; // 5レーン
+let currentLane = 2; // 初期位置は中央
 let gameInterval = null;
 
 function movePlayer(direction) {
@@ -32,18 +33,18 @@ function createObstacle() {
     const playerRect = player.getBoundingClientRect();
     const obstacleRect = obstacle.getBoundingClientRect();
 
+    // 衝突判定
     if (
       obstacleRect.bottom > playerRect.top &&
       obstacleRect.left < playerRect.right &&
       obstacleRect.right > playerRect.left &&
       obstacleRect.top < playerRect.bottom
     ) {
-      alert("ゲームオーバー！");
       clearInterval(fallInterval);
-      clearInterval(gameInterval);
-      location.reload();
+      gameOver();
     }
 
+    // 画面外に出たら削除
     if (obstacleTop > window.innerHeight) {
       clearInterval(fallInterval);
       obstacle.remove();
@@ -54,9 +55,14 @@ function createObstacle() {
 function startGame() {
   startButton.classList.add('hidden');
   player.classList.remove('hidden');
-  currentLane = 1;
+  currentLane = 2;
   player.style.left = lanes[currentLane];
   gameInterval = setInterval(createObstacle, 1500);
+}
+
+function gameOver() {
+  clearInterval(gameInterval);
+  gameOverScreen.classList.remove('hidden');
 }
 
 document.addEventListener('keydown', (e) => {
