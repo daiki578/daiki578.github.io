@@ -45,3 +45,21 @@ body {
 .hidden {
   display: none;
 }
+
+#game-over-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2em;
+  text-align: center;
+  border-radius: 10px;
+}
+
+#game-over-screen button {
+  padding: 1em 2em;
+  font-size: 1.2em;
+  cursor: pointer;
+}
