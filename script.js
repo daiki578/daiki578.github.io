@@ -1,45 +1,47 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const mario = document.getElementById("mario");
-  const obstacle = document.getElementById("obstacle");
-  const gameOverText = document.getElementById("game-over");
-  const startButton = document.getElementById("start-button");
+const player = document.querySelector('.player');
+const gameContainer = document.querySelector('.game-container');
+const lanes = ["20%", "50%", "80%"]; // 3レーン
+let currentLane = 1; // 真ん中スタート
 
-  let gameRunning = false;
-  let collisionCheck;
+function movePlayer(direction) {
+  if (direction === 'left' && currentLane > 0) {
+    currentLane--;
+  } else if (direction === 'right' && currentLane < lanes.length - 1) {
+    currentLane++;
+  }
+  player.style.left = lanes[currentLane];
+}
 
-  document.addEventListener("keydown", () => {
-    if (gameRunning && !mario.classList.contains("jump")) {
-      mario.classList.add("jump");
-      setTimeout(() => {
-        mario.classList.remove("jump");
-      }, 500);
-    }
-  });
-
-  startButton.addEventListener("click", () => {
-    // ゲーム状態を初期化
-    obstacle.classList.remove("move");
-    void obstacle.offsetWidth; // ← アニメーションリセットのためのハック
-    obstacle.classList.add("move");
-    obstacle.style.right = "-40px";
-
-    gameOverText.classList.add("hidden");
-    startButton.classList.add("hidden");
-    gameRunning = true;
-
-    // 衝突判定開始
-    if (collisionCheck) clearInterval(collisionCheck);
-    collisionCheck = setInterval(() => {
-      const marioBottom = parseInt(window.getComputedStyle(mario).getPropertyValue("bottom"));
-      const obstacleRight = parseInt(window.getComputedStyle(obstacle).getPropertyValue("right"));
-
-      if (obstacleRight > 550 && obstacleRight < 590 && marioBottom < 40) {
-        obstacle.classList.remove("move");
-        gameOverText.classList.remove("hidden");
-        startButton.classList.remove("hidden");
-        gameRunning = false;
-        clearInterval(collisionCheck);
-      }
-    }, 10);
-  });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') movePlayer('left');
+  if (e.key === 'ArrowRight') movePlayer('right');
 });
+
+function createObstacle() {
+  const obstacle = document.createElement('div');
+  obstacle.classList.add('obstacle');
+  const laneIndex = Math.floor(Math.random() * lanes.length);
+  obstacle.style.left = lanes[laneIndex];
+  gameContainer.appendChild(obstacle);
+
+  const fallInterval = setInterval(() => {
+    const obstacleTop = obstacle.getBoundingClientRect().top;
+    const playerRect = player.getBoundingClientRect();
+    const obstacleRect = obstacle.getBoundingClientRect();
+
+    if (
+      obstacleTop > window.innerHeight - 100 &&
+      Math.abs(obstacleRect.left - playerRect.left) < 50
+    ) {
+      alert("ゲームオーバー！");
+      location.reload();
+    }
+
+    if (obstacleTop > window.innerHeight) {
+      clearInterval(fallInterval);
+      obstacle.remove();
+    }
+  }, 50);
+}
+
+setInterval(createObstacle, 1500);
