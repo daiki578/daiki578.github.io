@@ -31,6 +31,9 @@ body {
   position: absolute;
   bottom: 0;
   right: -40px;
+}
+
+.obstacle.move {
   animation: moveObstacle 2s linear infinite;
 }
 
@@ -56,4 +59,11 @@ body {
 #game-over {
   font-size: 24px;
   color: red;
+}
+
+#start-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 10px;
+  cursor: pointer;
 }
