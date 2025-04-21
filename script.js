@@ -1,7 +1,9 @@
 const player = document.querySelector('.player');
 const gameContainer = document.querySelector('.game-container');
-const lanes = ["20%", "50%", "80%"]; // 3レーン
-let currentLane = 1; // 真ん中スタート
+const startButton = document.getElementById('start-button');
+const lanes = ["20%", "50%", "80%"];
+let currentLane = 1;
+let gameInterval = null;
 
 function movePlayer(direction) {
   if (direction === 'left' && currentLane > 0) {
@@ -12,28 +14,33 @@ function movePlayer(direction) {
   player.style.left = lanes[currentLane];
 }
 
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') movePlayer('left');
-  if (e.key === 'ArrowRight') movePlayer('right');
-});
-
 function createObstacle() {
   const obstacle = document.createElement('div');
   obstacle.classList.add('obstacle');
   const laneIndex = Math.floor(Math.random() * lanes.length);
   obstacle.style.left = lanes[laneIndex];
+  obstacle.style.top = '0px';
   gameContainer.appendChild(obstacle);
 
+  let obstacleTop = 0;
+  const fallSpeed = 4;
+
   const fallInterval = setInterval(() => {
-    const obstacleTop = obstacle.getBoundingClientRect().top;
+    obstacleTop += fallSpeed;
+    obstacle.style.top = obstacleTop + 'px';
+
     const playerRect = player.getBoundingClientRect();
     const obstacleRect = obstacle.getBoundingClientRect();
 
     if (
-      obstacleTop > window.innerHeight - 100 &&
-      Math.abs(obstacleRect.left - playerRect.left) < 50
+      obstacleRect.bottom > playerRect.top &&
+      obstacleRect.left < playerRect.right &&
+      obstacleRect.right > playerRect.left &&
+      obstacleRect.top < playerRect.bottom
     ) {
       alert("ゲームオーバー！");
+      clearInterval(fallInterval);
+      clearInterval(gameInterval);
       location.reload();
     }
 
@@ -41,7 +48,20 @@ function createObstacle() {
       clearInterval(fallInterval);
       obstacle.remove();
     }
-  }, 50);
+  }, 20);
 }
 
-setInterval(createObstacle, 1500);
+function startGame() {
+  startButton.classList.add('hidden');
+  player.classList.remove('hidden');
+  currentLane = 1;
+  player.style.left = lanes[currentLane];
+  gameInterval = setInterval(createObstacle, 1500);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') movePlayer('left');
+  if (e.key === 'ArrowRight') movePlayer('right');
+});
+
+startButton.addEventListener('click', startGame);
