@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>タイムアタックゲーム</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>マリオ風ジャンプゲーム</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="game-container">
-    <h1>タイムアタックゲーム</h1>
-    <p>残り時間: <span id="time">10</span> 秒</p>
-    <p>スコア: <span id="score">0</span></p>
-    
-    <button id="clickButton" disabled>クリック！</button>
-    <button id="startButton">スタート</button>
-    <button id="restartButton" style="display: none;">リスタート</button>
+  <h1>マリオ風ゲーム</h1>
+  <div class="game">
+    <div class="mario" id="mario"></div>
+    <div class="obstacle" id="obstacle"></div>
   </div>
+  <p id="game-over" class="hidden">ゲームオーバー！</p>
+
   <script src="script.js"></script>
 </body>
 </html>
