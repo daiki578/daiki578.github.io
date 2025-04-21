@@ -5,6 +5,8 @@ const gameOverScreen = document.getElementById('game-over-screen');
 const lanes = ["10%", "25%", "40%", "55%", "70%"]; // 5レーン
 let currentLane = 2; // 初期位置は中央
 let gameInterval = null;
+let speed = 4; // 初期速度
+let speedIncreaseInterval = 5000; // 速度を上げる間隔（ミリ秒）
 
 function movePlayer(direction) {
   if (direction === 'left' && currentLane > 0) {
@@ -24,10 +26,9 @@ function createObstacle() {
   gameContainer.appendChild(obstacle);
 
   let obstacleTop = 0;
-  const fallSpeed = 4;
 
   const fallInterval = setInterval(() => {
-    obstacleTop += fallSpeed;
+    obstacleTop += speed;
     obstacle.style.top = obstacleTop + 'px';
 
     const playerRect = player.getBoundingClientRect();
@@ -58,6 +59,13 @@ function startGame() {
   currentLane = 2;
   player.style.left = lanes[currentLane];
   gameInterval = setInterval(createObstacle, 1500);
+
+  // 速度を上げる
+  setInterval(() => {
+    if (speed < 10) {
+      speed += 0.5; // スピードを徐々に上げる
+    }
+  }, speedIncreaseInterval);
 }
 
 function gameOver() {
