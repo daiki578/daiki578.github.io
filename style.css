@@ -2,14 +2,15 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #222;
+  background-color: #87ceeb; /* 水色背景 */
 }
 
 .game-container {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background-color: #333;
+  background-color: #87ceeb;
+  overflow: hidden;
 }
 
 .player {
@@ -29,11 +30,18 @@ body {
   height: 50px;
   background-color: #f00;
   top: 0;
-  animation: fall 3s linear infinite;
 }
 
-@keyframes fall {
-  to {
-    top: 100vh;
-  }
+#start-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1em 2em;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
 }
