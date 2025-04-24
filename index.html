@@ -1,16 +1,1 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>将棋ゲーム</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container">
-    <h1>将棋ゲーム</h1>
-    <button id="startBtn">ゲーム開始</button>
-    <div id="board"></div>
-  </div>
-  <script src="shogi.js"></script>
-</body>
-</html>
+<!DOCTYPE html> <html lang="ja"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>ランダムイベント将棋</title> <link rel="stylesheet" href="style.css"> </head> <body> <div class="container"> <h1>ランダムイベント将棋</h1> <div class="game-info"> <div id="turn-info">先手の番です</div> <div id="capture-area"> <div id="gote-capture" class="capture-zone"> <h3>後手の持ち駒</h3> <div class="captured-pieces"></div> </div> <div id="sente-capture" class="capture-zone"> <h3>先手の持ち駒</h3> <div class="captured-pieces"></div> </div> </div> </div> <div class="board-container"> <div class="coordinates x-coords"> <div>9</div><div>8</div><div>7</div><div>6</div><div>5</div><div>4</div><div>3</div><div>2</div><div>1</div> </div> <div class="main-board-container"> <div class="coordinates y-coords"> <div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div><div>七</div><div>八</div><div>九</div> </div> <div id="board"></div> </div> </div> <div class="event-area"> <h2>イベント情報</h2> <div id="next-event">次のイベントまで: <span id="event-countdown">3</span>ターン</div> <div id="current-event">現在のイベント: なし</div> <div id="event-effect">効果: なし</div> <div id="event-remaining">効果の残りターン: 0</div> </div> <div class="controls"> <button id="reset-game">ゲームをリセット</button> <button id="undo-move">一手戻る</button> </div> <div class="promotion-modal" id="promotion-modal"> <div class="promotion-content"> <h3>駒を成りますか？</h3> <div class="promotion-buttons"> <button id="promote-yes">はい</button> <button id="promote-no">いいえ</button> </div> </div> </div> <div class="piece-selection-modal" id="piece-selection-modal"> <div class="piece-selection-content"> <h3>配置する駒を選択してください</h3> <div id="pieces-to-select" class="pieces-list"></div> </div> </div> </div> <script src="script.js"></script> </body> </html>
