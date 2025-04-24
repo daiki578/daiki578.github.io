@@ -1,81 +1,29 @@
-const player = document.querySelector('.player');
-const gameContainer = document.querySelector('.game-container');
-const startButton = document.getElementById('start-button');
-const gameOverScreen = document.getElementById('game-over-screen');
-const lanes = ["10%", "25%", "40%", "55%", "70%"]; // 5レーン
-let currentLane = 2; // 初期位置は中央
-let gameInterval = null;
-let speed = 4; // 初期速度
-let speedIncreaseInterval = 5000; // 速度を上げる間隔（ミリ秒）
+const board = document.getElementById('board');
+const boardSize = 9;
 
-function movePlayer(direction) {
-  if (direction === 'left' && currentLane > 0) {
-    currentLane--;
-  } else if (direction === 'right' && currentLane < lanes.length - 1) {
-    currentLane++;
+// 初期配置（簡略化された駒：歩, 金, 銀, 桂, 香, 角, 飛, 王）
+const initialBoard = [
+  ['香','桂','銀','金','王','金','銀','桂','香'],
+  ['','飛','','','','','','角',''],
+  ['歩','歩','歩','歩','歩','歩','歩','歩','歩'],
+  ['','','','','','','','',''],
+  ['','','','','','','','',''],
+  ['','','','','','','','',''],
+  ['と','と','と','と','と','と','と','と','と'], // 後手の歩（と）
+  ['','馬','','','','','','龍',''],
+  ['香','桂','銀','金','玉','金','銀','桂','香']
+];
+
+function drawBoard() {
+  board.innerHTML = '';
+  for (let y = 0; y < boardSize; y++) {
+    for (let x = 0; x < boardSize; x++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.textContent = initialBoard[y][x];
+      board.appendChild(cell);
+    }
   }
-  player.style.left = lanes[currentLane];
 }
 
-function createObstacle() {
-  const obstacle = document.createElement('div');
-  obstacle.classList.add('obstacle');
-  const laneIndex = Math.floor(Math.random() * lanes.length);
-  obstacle.style.left = lanes[laneIndex];
-  obstacle.style.top = '0px';
-  gameContainer.appendChild(obstacle);
-
-  let obstacleTop = 0;
-
-  const fallInterval = setInterval(() => {
-    obstacleTop += speed;
-    obstacle.style.top = obstacleTop + 'px';
-
-    const playerRect = player.getBoundingClientRect();
-    const obstacleRect = obstacle.getBoundingClientRect();
-
-    // 衝突判定
-    if (
-      obstacleRect.bottom > playerRect.top &&
-      obstacleRect.left < playerRect.right &&
-      obstacleRect.right > playerRect.left &&
-      obstacleRect.top < playerRect.bottom
-    ) {
-      clearInterval(fallInterval);
-      gameOver();
-    }
-
-    // 画面外に出たら削除
-    if (obstacleTop > window.innerHeight) {
-      clearInterval(fallInterval);
-      obstacle.remove();
-    }
-  }, 20);
-}
-
-function startGame() {
-  startButton.classList.add('hidden');
-  player.classList.remove('hidden');
-  currentLane = 2;
-  player.style.left = lanes[currentLane];
-  gameInterval = setInterval(createObstacle, 1500);
-
-  // 速度を上げる
-  setInterval(() => {
-    if (speed < 10) {
-      speed += 0.5; // スピードを徐々に上げる
-    }
-  }, speedIncreaseInterval);
-}
-
-function gameOver() {
-  clearInterval(gameInterval);
-  gameOverScreen.classList.remove('hidden');
-}
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') movePlayer('left');
-  if (e.key === 'ArrowRight') movePlayer('right');
-});
-
-startButton.addEventListener('click', startGame);
+drawBoard();
