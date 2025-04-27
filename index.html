@@ -3,70 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ランダムイベント将棋</title>
-    <link rel="stylesheet" href="style.css">
+    <title>イベント将棋</title>
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f5f5dc;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        h1 {
+            color: #8b4513;
+            margin-bottom: 20px;
+        }
+        
+        .game-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .captured-pieces {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 150px;
+            background-color: #e6d8ad;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .captured-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .captured-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            min-height: 100px;
+        }
+        
+        .captured-piece {
+            width: 30px;
+            height: 30px;
+            background-color: #f0cea0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 20px;
+        }
+        
+        .board {
+            background-color: #e6d8ad;
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: repeat(9, 1fr);
+            gap: 2px;
+            padding: 10px;
+            border: 5px solid #8b4513;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cell {
+            width: 60px;
+            height: 60px;
+            background-color: #f0cea0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .piece {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            user-select: none;
+            transition: transform 0.2s;
+        }
+        
+        .player1-piece {
+            background-color: #f5deb3;
+            color: #000;
+            transform: rotate(0deg);
+        }
+        
+        .player2-piece {
+            background-color: #d2b48c;
+            color: #000;
+            transform: rotate(180deg);
+        }
+        
+        .selected {
+            background-color: #ffcc66;
+        }
+        
+        .valid-move {
+            position: relative;
+        }
+        
+        .valid-move::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(0, 255, 0, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .event-panel {
+            background-color: #e6d8ad;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .turn-display {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .event-display {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #8b4513;
+            margin-bottom: 10px;
+        }
+        
+        .event-description {
+            font-size: 1.1em;
+        }
+        
+        .fog-effect {
+            position: relative;
+        }
+        
+        .fog-effect::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(169, 169, 169, 0.7);
+            z-index: 1;
+        }
+        
+        .blizzard-effect .piece {
+            box-shadow: 0 0 10px 3px #add8e6;
+        }
+        
+        .sandstorm-effect {
+            background-color: #d2b48c;
+            animation: sandstorm 1s infinite;
+        }
+        
+        @keyframes sandstorm {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #8b4513;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #a0522d;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>ランダムイベント将棋</h1>
-        
-        <div class="game-info">
-            <div id="turn-info">先手の番です</div>
-            <div id="capture-area">
-                <div id="gote-capture" class="capture-zone">
-                    <h3>後手の持ち駒</h3>
-                    <div class="captured-pieces"></div>
-                </div>
-                <div id="sente-capture" class="capture-zone">
-                    <h3>先手の持ち駒</h3>
-                    <div class="captured-pieces"></div>
-                </div>
-            </div>
+    <h1>イベント将棋</h1>
+    
+    <div class="event-panel">
+        <div class="turn-display">ターン: <span id="turn-number">1</span> (プレイヤー <span id="current-player">1</span>)</div>
+        <div class="event-display" id="event-name">ゲーム開始</div>
+        <div class="event-description" id="event-description">3ターンごとにランダムイベントが発生します</div>
+    </div>
+    
+    <div class="game-container">
+        <div class="captured-pieces">
+            <div class="captured-title">プレイヤー2の持ち駒</div>
+            <div class="captured-area" id="player2-captured"></div>
         </div>
         
-        <div class="board-container">
-            <div class="coordinates x-coords">
-                <div>9</div><div>8</div><div>7</div><div>6</div><div>5</div><div>4</div><div>3</div><div>2</div><div>1</div>
-            </div>
-            <div class="main-board-container">
-                <div class="coordinates y-coords">
-                    <div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div><div>七</div><div>八</div><div>九</div>
-                </div>
-                <div id="board"></div>
-            </div>
+        <div class="board" id="shogi-board">
+            <!-- 将棋盤のマスはJavaScriptで生成します -->
         </div>
         
-        <div class="event-area">
-            <h2>イベント情報</h2>
-            <div id="next-event">次のイベントまで: <span id="event-countdown">3</span>ターン</div>
-            <div id="current-event">現在のイベント: なし</div>
-            <div id="event-effect">効果: なし</div>
-            <div id="event-remaining">効果の残りターン: 0</div>
-        </div>
-        
-        <div class="controls">
-            <button id="reset-game">ゲームをリセット</button>
-            <button id="undo-move">一手戻る</button>
-        </div>
-        
-        <div class="promotion-modal" id="promotion-modal">
-            <div class="promotion-content">
-                <h3>駒を成りますか？</h3>
-                <div class="promotion-buttons">
-                    <button id="promote-yes">はい</button>
-                    <button id="promote-no">いいえ</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="piece-selection-modal" id="piece-selection-modal">
-            <div class="piece-selection-content">
-                <h3>配置する駒を選択してください</h3>
-                <div id="pieces-to-select" class="pieces-list"></div>
-            </div>
+        <div class="captured-pieces">
+            <div class="captured-title">プレイヤー1の持ち駒</div>
+            <div class="captured-area" id="player1-captured"></div>
         </div>
     </div>
     
-    <script src="script.js"></script>
+    <div class="controls">
+        <button id="reset-game">ゲームをリセット</button>
+        <button id="undo-move">1手前に戻る</button>
+    </div>
+    
+    <script>
+        // JavaScriptコードは別ファイルで実装予定
+    </script>
 </body>
 </html>
